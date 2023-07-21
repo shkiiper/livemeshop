@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.liveme.entity.Product;
 import com.liveme.repository.ProductRepository;
-
 import java.util.List;
 
 @Service
@@ -19,7 +18,7 @@ public class ProductService {
 
     public String createProduct(Product product) {
         productRepository.save(product);
-        return "Role created successfully!";
+        return "Product created successfully!";
     }
 
     public List<Product> getAllProduct() {

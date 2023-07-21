@@ -44,18 +44,6 @@ public class UserController {
         return service.addUser(userInfo);
     }
 
-    // @GetMapping("/all")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    // public List<User> getAllTheProducts() {
-    // return service.getUser();
-    // }
-    //
-    // @GetMapping("/{id}")
-    // @PreAuthorize("hasAuthority('ROLE_USER')")
-    // public Product getProductById(@PathVariable int id) {
-    // return service.getProduct(id);
-    // }
-
     @PostMapping("/authenticate")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager

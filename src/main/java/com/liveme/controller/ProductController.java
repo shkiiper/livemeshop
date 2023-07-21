@@ -1,6 +1,7 @@
 package com.liveme.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.liveme.entity.Product;
@@ -27,4 +28,5 @@ public class ProductController {
     public List<Product> getAllProduct() {
         return productService.getAllProduct();
     }
+
 }
