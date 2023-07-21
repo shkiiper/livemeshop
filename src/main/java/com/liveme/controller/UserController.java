@@ -1,9 +1,5 @@
-package com.javatechie.controller;
+package com.liveme.controller;
 
-import com.javatechie.dto.AuthRequest;
-import com.javatechie.entity.UserInfo;
-import com.javatechie.service.JwtService;
-import com.javatechie.service.UserService;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.HashMap;
@@ -20,6 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import com.liveme.dto.AuthRequest;
+import com.liveme.entity.UserInfo;
+import com.liveme.service.JwtService;
+import com.liveme.service.UserService;
 
 @RestController
 @RequestMapping("/users")

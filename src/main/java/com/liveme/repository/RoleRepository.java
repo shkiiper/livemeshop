@@ -1,7 +1,8 @@
-package com.javatechie.repository;
+package com.liveme.repository;
 
-import com.javatechie.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.liveme.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     // Можно добавить пользовательские методы, если требуется дополнительная логика

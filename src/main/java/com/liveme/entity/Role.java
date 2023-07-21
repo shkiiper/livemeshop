@@ -1,4 +1,4 @@
-package com.javatechie.entity;
+package com.liveme.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,7 +1,5 @@
-package com.javatechie.filter;
+package com.liveme.filter;
 
-import com.javatechie.config.UserInfoUserDetailsService;
-import com.javatechie.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.liveme.config.UserInfoUserDetailsService;
+import com.liveme.service.JwtService;
 
 import java.io.IOException;
 

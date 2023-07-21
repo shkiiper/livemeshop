@@ -1,7 +1,8 @@
-package com.javatechie.repository;
+package com.liveme.repository;
 
-import com.javatechie.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.liveme.entity.UserInfo;
 
 import java.util.Optional;
 

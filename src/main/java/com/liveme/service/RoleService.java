@@ -1,9 +1,10 @@
-package com.javatechie.service;
+package com.liveme.service;
 
-import com.javatechie.entity.Role;
-import com.javatechie.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.liveme.entity.Role;
+import com.liveme.repository.RoleRepository;
 
 import java.util.List;
 

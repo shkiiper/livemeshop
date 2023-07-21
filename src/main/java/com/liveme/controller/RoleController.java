@@ -1,9 +1,10 @@
-package com.javatechie.controller;
+package com.liveme.controller;
 
-import com.javatechie.entity.Role;
-import com.javatechie.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.liveme.entity.Role;
+import com.liveme.service.RoleService;
 
 import java.util.List;
 

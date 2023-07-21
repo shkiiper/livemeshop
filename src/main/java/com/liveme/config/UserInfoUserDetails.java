@@ -1,9 +1,10 @@
-package com.javatechie.config;
+package com.liveme.config;
 
-import com.javatechie.entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.liveme.entity.UserInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
