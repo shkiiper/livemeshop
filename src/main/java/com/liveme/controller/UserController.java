@@ -1,6 +1,7 @@
 package com.liveme.controller;
 
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,14 @@ public class UserController {
             throw new UsernameNotFoundException("invalid user request !");
         }
 
+    }
+
+    @GetMapping("/current-user")
+    public UserInfo getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        return service.getUserByName(username);
     }
 
 }

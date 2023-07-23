@@ -23,4 +23,8 @@ public class UserService {
         return "user added to system ";
     }
 
+    public UserInfo getUserByName(String username) {
+        return repository.findByName(username).orElse(null);
+    }
+
 }
