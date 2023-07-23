@@ -51,7 +51,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/users/new", "/users/authenticate", "/roles/create",
                         "/product/create",
-                        "/category/create")
+                        "/category/create",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/users/**")
