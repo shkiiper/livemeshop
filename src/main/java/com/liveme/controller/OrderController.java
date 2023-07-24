@@ -9,7 +9,7 @@ import com.liveme.service.OrderService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
 

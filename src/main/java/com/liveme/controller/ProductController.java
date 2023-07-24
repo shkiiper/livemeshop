@@ -1,11 +1,10 @@
 package com.liveme.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.liveme.entity.Product;
 import com.liveme.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,14 +18,35 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/create")
-    public String createProduct(@RequestBody Product product) {
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    // @GetMapping("/{id}")
+    // public Product getProductById(@PathVariable int id) {
+    // return productService.getProductById(id);
+    // }
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable int id) {
+        return productService.getProductWithGalleryById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
-    @GetMapping("/all")
-    public List<Product> getAllProduct() {
-        return productService.getAllProduct();
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable int id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable int id) {
+        productService.deleteProduct(id);
+    }
 }
