@@ -35,25 +35,24 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome this endpoint is not secure";
-    }
-
     @PostMapping("/new")
     public String addNewUser(@RequestBody UserInfo userInfo) {
         return service.addUser(userInfo);
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    @PostMapping("/auth")
+    public ResponseEntity<Map<String, Object>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(authRequest.getName());
-            Map<String, String> response = new HashMap<>();
+            UserInfo user = service.getUserByName(authRequest.getName());
+
+            Map<String, Object> response = new HashMap<>();
             response.put("token", token);
+            response.put("user", user);
+
             return ResponseEntity.ok(response);
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
@@ -68,4 +67,36 @@ public class UserController {
         return service.getUserByName(username);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserInfo> getUserById(@PathVariable int id) {
+        UserInfo user = service.getUserById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody UserInfo userInfo) {
+        UserInfo existingUser = service.getUserById(id);
+        if (existingUser != null) {
+            userInfo.setId(id);
+            service.updateUser(userInfo);
+            return ResponseEntity.ok("User updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+        UserInfo existingUser = service.getUserById(id);
+        if (existingUser != null) {
+            service.deleteUser(id);
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

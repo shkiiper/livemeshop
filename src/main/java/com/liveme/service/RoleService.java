@@ -3,6 +3,7 @@ package com.liveme.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.liveme.entity.Review;
 import com.liveme.entity.Role;
 import com.liveme.repository.RoleRepository;
 
@@ -26,5 +27,16 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    // Можно добавить пользовательские методы, если требуется дополнительная логика
+    public Role getRoleById(int id) {
+        return roleRepository.findById(id).orElse(null);
+    }
+
+    public Role updateRole(int id, Role role) {
+        role.setId(id);
+        return roleRepository.save(role);
+    }
+
+    public void deleteRole(int id) {
+        roleRepository.deleteById(id);
+    }
 }

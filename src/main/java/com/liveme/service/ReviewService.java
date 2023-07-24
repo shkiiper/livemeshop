@@ -3,6 +3,7 @@ package com.liveme.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.liveme.entity.Order;
 import com.liveme.entity.Review;
 import com.liveme.repository.ReviewRepository;
 
@@ -24,6 +25,19 @@ public class ReviewService {
 
     public List<Review> getAllReview() {
         return reviewRepository.findAll();
+    }
+
+    public Review getReviewById(int id) {
+        return reviewRepository.findById(id).orElse(null);
+    }
+
+    public Review updateReview(int id, Review review) {
+        review.setId(id);
+        return reviewRepository.save(review);
+    }
+
+    public void deleteReview(int id) {
+        reviewRepository.deleteById(id);
     }
 
 }
