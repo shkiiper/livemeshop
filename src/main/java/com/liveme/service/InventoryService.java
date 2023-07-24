@@ -3,6 +3,7 @@ package com.liveme.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.liveme.entity.Category;
 import com.liveme.entity.Inventory;
 import com.liveme.repository.InventoryRepository;
 
@@ -24,6 +25,19 @@ public class InventoryService {
 
     public List<Inventory> getAllInventories() {
         return inventoryRepository.findAll();
+    }
+
+    public Inventory getInventoryById(int id) {
+        return inventoryRepository.findById(id).orElse(null);
+    }
+
+    public Inventory updateInventory(int id, Inventory inventory) {
+        inventory.setId(id);
+        return inventoryRepository.save(inventory);
+    }
+
+    public void deleteInventory(int id) {
+        inventoryRepository.deleteById(id);
     }
 
 }

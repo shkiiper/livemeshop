@@ -46,16 +46,18 @@ public class UserController {
     }
 
     @PostMapping("/authenticate")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getName(),
-                        authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getName());
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
-        }
+    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
 
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(authRequest.getName());
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+        } else {
+            throw new UsernameNotFoundException("Invalid user request!");
+        }
     }
 
     @GetMapping("/current-user")

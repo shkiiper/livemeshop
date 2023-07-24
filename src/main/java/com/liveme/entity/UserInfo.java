@@ -21,6 +21,7 @@ public class UserInfo {
     private String name;
     private String email;
     private String password;
+    private String phone;
 
     @ManyToOne
     @JoinColumn(name = "role_id") // Имя колонки для связи
