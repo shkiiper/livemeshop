@@ -31,4 +31,8 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY) // если нужно всегда загружать галерею
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

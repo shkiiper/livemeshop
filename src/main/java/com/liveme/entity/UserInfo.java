@@ -24,6 +24,10 @@ public class UserInfo {
     private String phone;
 
     @ManyToOne
-    @JoinColumn(name = "role_id") // Имя колонки для связи
+    @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "warhouse_id")
+    private Warhouse warhouse;
 }
