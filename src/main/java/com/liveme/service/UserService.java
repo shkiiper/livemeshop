@@ -19,9 +19,20 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public String addUser(UserInfo userInfo) {
+        String username = userInfo.getName();
+        String email = userInfo.getEmail();
+
+        if (repository.findByName(username).isPresent()) {
+            throw new IllegalArgumentException("Имя пользователя уже существует.");
+        }
+
+        if (repository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Адрес электронной почты уже существует.");
+        }
+
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
-        return "user added to system ";
+        return "Пользователь добавлен в систему";
     }
 
     public UserInfo getUserByName(String username) {
