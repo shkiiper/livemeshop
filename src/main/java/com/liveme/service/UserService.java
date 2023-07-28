@@ -43,21 +43,43 @@ public class UserService {
         return repository.findById(id).orElse(null);
     }
 
-    public String updateUser(UserInfo userInfo) {
-        if (userInfo.getId() == 0) {
-            throw new IllegalArgumentException("User ID cannot be zero");
+    // public String updateUser(UserInfo userInfo) {
+    // if (userInfo.getId() == 0) {
+    // throw new IllegalArgumentException("User ID cannot be zero");
+    // }
+
+    // UserInfo existingUser = repository.findById(userInfo.getId()).orElse(null);
+    // if (existingUser != null) {
+    // existingUser.setName(userInfo.getName());
+    // existingUser.setEmail(userInfo.getEmail());
+    // existingUser.setPhone(userInfo.getPhone());
+    // repository.save(existingUser);
+    // return "User updated successfully";
+    // } else {
+    // throw new IllegalArgumentException("User not found with ID: " +
+    // userInfo.getId());
+    // }
+    // }
+    public String updateUser(String currentUsername, UserInfo updatedUserInfo) {
+        UserInfo existingUser = repository.findByName(currentUsername).orElse(null);
+        if (existingUser == null) {
+            throw new IllegalArgumentException("Текущий пользователь не найден в базе данных.");
         }
 
-        UserInfo existingUser = repository.findById(userInfo.getId()).orElse(null);
-        if (existingUser != null) {
-            existingUser.setName(userInfo.getName());
-            existingUser.setEmail(userInfo.getEmail());
-            existingUser.setPhone(userInfo.getPhone());
-            repository.save(existingUser);
-            return "User updated successfully";
-        } else {
-            throw new IllegalArgumentException("User not found with ID: " + userInfo.getId());
+        // Проверяем, какие поля переданы в объекте updatedUserInfo и обновляем их
+        if (updatedUserInfo.getName() != null) {
+            existingUser.setName(updatedUserInfo.getName());
         }
+        if (updatedUserInfo.getEmail() != null) {
+            existingUser.setEmail(updatedUserInfo.getEmail());
+        }
+        if (updatedUserInfo.getPhone() != null) {
+            existingUser.setPhone(updatedUserInfo.getPhone());
+        }
+
+        repository.save(existingUser);
+
+        return "Пользователь успешно обновлен";
     }
 
     public String deleteUser(int id) {

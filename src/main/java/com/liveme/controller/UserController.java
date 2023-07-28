@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/new")
+    @PostMapping
     public String addNewUser(@RequestBody UserInfo userInfo) {
         return service.addUser(userInfo);
     }
@@ -77,15 +77,28 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody UserInfo userInfo) {
-        UserInfo existingUser = service.getUserById(id);
-        if (existingUser != null) {
-            userInfo.setId(id);
-            service.updateUser(userInfo);
-            return ResponseEntity.ok("User updated successfully");
-        } else {
-            return ResponseEntity.notFound().build();
+    // @PutMapping("/{id}")
+    // public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody
+    // UserInfo userInfo) {
+    // UserInfo existingUser = service.getUserById(id);
+    // if (existingUser != null) {
+    // userInfo.setId(id);
+    // service.updateUser(userInfo);
+    // return ResponseEntity.ok("User updated successfully");
+    // } else {
+    // return ResponseEntity.notFound().build();
+    // }
+    // }
+    @PatchMapping
+    public ResponseEntity<String> updateUser(@RequestBody UserInfo userInfo, Authentication authentication) {
+        // Получаем имя текущего аутентифицированного пользователя из токена
+        String currentUsername = authentication.getName();
+
+        try {
+            service.updateUser(currentUsername, userInfo);
+            return ResponseEntity.ok("Пользователь успешно обновлен");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

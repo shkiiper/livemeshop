@@ -25,7 +25,7 @@ public class UserInfo {
     @Column(unique = true)
     @NotEmpty(message = "Имя пользователя не должно быть пустым")
     private String name;
-    @Column(unique = true)
+
     @Email(message = "Неверный формат электронной почты")
     private String email;
     @Size(min = 6, message = "Пароль должен быть не менее 6 символов")
