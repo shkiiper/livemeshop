@@ -40,26 +40,28 @@ public class UserController {
         return service.addUser(userInfo);
     }
 
-    @PostMapping("/auth")
-    public ResponseEntity<Map<String, Object>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
+    // @PostMapping("/auth")
+    // public ResponseEntity<Map<String, Object>>
+    // authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    // Authentication authentication = authenticationManager.authenticate(
+    // new UsernamePasswordAuthenticationToken(authRequest.getName(),
+    // authRequest.getPassword()));
 
-        if (authentication.isAuthenticated()) {
-            String username = authRequest.getName();
-            String accessToken = jwtService.generateToken(username);
-            String refreshToken = jwtService.generateRefreshToken(username);
+    // if (authentication.isAuthenticated()) {
+    // String username = authRequest.getName();
+    // String accessToken = jwtService.generateToken(username);
+    // String refreshToken = jwtService.generateRefreshToken(username);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("user", service.getUserByName(username));
-            response.put("accessToken", accessToken);
-            response.put("refreshToken", refreshToken);
+    // Map<String, Object> response = new HashMap<>();
+    // response.put("user", service.getUserByName(username));
+    // response.put("accessToken", accessToken);
+    // response.put("refreshToken", refreshToken);
 
-            return ResponseEntity.ok(response);
-        } else {
-            throw new UsernameNotFoundException("Invalid user request!");
-        }
-    }
+    // return ResponseEntity.ok(response);
+    // } else {
+    // throw new UsernameNotFoundException("Invalid user request!");
+    // }
+    // }
 
     @GetMapping("/current-user")
     public UserInfo getCurrentUser() {

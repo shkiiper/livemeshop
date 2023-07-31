@@ -49,7 +49,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/users/**", "/roles/**",
+                .requestMatchers("/users/**", "/auth/**", "/roles/**",
                         "/product/**",
                         "/category/**",
                         "/gallery/**",
