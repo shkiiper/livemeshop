@@ -66,10 +66,36 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest authRequest) {
-        try {
+    // @PostMapping("/login")
+    // public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest
+    // authRequest) {
+    // try {
 
+    // Authentication authentication = authenticationManager.authenticate(
+    // new UsernamePasswordAuthenticationToken(authRequest.getName(),
+    // authRequest.getPassword()));
+
+    // if (authentication.isAuthenticated()) {
+    // String username = authRequest.getName();
+    // String accessToken = jwtService.generateToken(username);
+    // String refreshToken = jwtService.generateRefreshToken(username);
+
+    // Map<String, Object> response = new HashMap<>();
+    // response.put("user", userService.getUserByName(username));
+    // response.put("accessToken", accessToken);
+    // response.put("refreshToken", refreshToken);
+
+    // return ResponseEntity.ok(response);
+    // } else {
+    // throw new UsernameNotFoundException("Invalid user request!");
+    // }
+    // } catch (BadCredentialsException e) {
+    // throw new UsernameNotFoundException("Invalid username or password");
+    // }
+    // }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+        try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
 
@@ -85,30 +111,23 @@ public class AuthController {
 
                 return ResponseEntity.ok(response);
             } else {
-                throw new UsernameNotFoundException("Invalid user request!");
+                throw new UsernameNotFoundException("Invalid user request.");
             }
         } catch (BadCredentialsException e) {
-            throw new UsernameNotFoundException("Invalid username or password");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "Ошибка");
+            errorResponse.put("errorMessage", "Invalid password.");
+            errorResponse.put("fieldName", "password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (UsernameNotFoundException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "Ошибка");
+            errorResponse.put("errorMessage", "Invalid username.");
+            errorResponse.put("fieldName", "username");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
-    // @PostMapping("/register")
-    // public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
-    // try {
-    // userService.addNewUser(userInfo);
-    // return ResponseEntity.ok("Пользователь добавлен в систему.");
-    // } catch (BadRequestException ex) {
-    // Map<String, String> errorResponse = new HashMap<>();
-    // errorResponse.put("status", ex.getStatus());
-    // errorResponse.put("errorMessage", ex.getErrorMessage());
-    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    // } catch (SuccessException ex) {
-    // Map<String, String> successResponse = new HashMap<>();
-    // successResponse.put("status", ex.getStatus());
-    // successResponse.put("message", ex.getMessage());
-    // return ResponseEntity.ok(successResponse);
-    // }
-    // }
     @PostMapping("/register")
     public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
         try {
