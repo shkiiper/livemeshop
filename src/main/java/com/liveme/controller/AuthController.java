@@ -116,14 +116,8 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("status", "Ошибка");
-            errorResponse.put("errorMessage", "Invalid password.");
-            errorResponse.put("fieldName", "password");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        } catch (UsernameNotFoundException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("status", "Ошибка");
-            errorResponse.put("errorMessage", "Invalid username.");
-            errorResponse.put("fieldName", "username");
+            errorResponse.put("errorMessage", "Не верное имя пользователя или пароль");
+            errorResponse.put("fieldName", "username/password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
