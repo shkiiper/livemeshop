@@ -92,15 +92,36 @@ public class AuthController {
         }
     }
 
+    // @PostMapping("/register")
+    // public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
+    // try {
+    // userService.addNewUser(userInfo);
+    // return ResponseEntity.ok("Пользователь добавлен в систему.");
+    // } catch (BadRequestException ex) {
+    // Map<String, String> errorResponse = new HashMap<>();
+    // errorResponse.put("status", ex.getStatus());
+    // errorResponse.put("errorMessage", ex.getErrorMessage());
+    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    // } catch (SuccessException ex) {
+    // Map<String, String> successResponse = new HashMap<>();
+    // successResponse.put("status", ex.getStatus());
+    // successResponse.put("message", ex.getMessage());
+    // return ResponseEntity.ok(successResponse);
+    // }
+    // }
     @PostMapping("/register")
     public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
         try {
             userService.addNewUser(userInfo);
-            return ResponseEntity.ok("Пользователь добавлен в систему.");
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("status", "Успешно");
+            successResponse.put("message", "Пользователь добавлен в систему.");
+            return ResponseEntity.ok(successResponse);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("status", ex.getStatus());
             errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (SuccessException ex) {
             Map<String, String> successResponse = new HashMap<>();

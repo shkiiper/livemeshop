@@ -43,19 +43,19 @@ public class UserService {
         String email = userInfo.getEmail();
 
         if (username == null || username.isEmpty()) {
-            throw new BadRequestException("Ошибка", "Имя пользователя не может быть пустым.");
+            throw new BadRequestException("Ошибка", "Имя пользователя не может быть пустым.", "name");
         }
 
         if (email == null || email.isEmpty()) {
-            throw new BadRequestException("Ошибка", "Адрес электронной почты не может быть пустым.");
+            throw new BadRequestException("Ошибка", "Адрес электронной почты не может быть пустым.", "email");
         }
 
         if (repository.findByName(username).isPresent()) {
-            throw new BadRequestException("Ошибка", "Имя пользователя уже существует.");
+            throw new BadRequestException("Ошибка", "Имя пользователя уже существует.", "name");
         }
 
         if (repository.findByEmail(email).isPresent()) {
-            throw new BadRequestException("Ошибка", "Адрес электронной почты уже существует.");
+            throw new BadRequestException("Ошибка", "Адрес электронной почты уже существует.", "email");
         }
 
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));

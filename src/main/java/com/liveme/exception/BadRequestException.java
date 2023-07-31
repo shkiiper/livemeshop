@@ -7,15 +7,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BadRequestException extends Exception {
     private String status;
     private String errorMessage;
+    private static String fieldName;
 
     public BadRequestException() {
-        this("Ошибка", "Bad Request");
+        this("Ошибка", "Bad Request", fieldName);
     }
 
-    public BadRequestException(String status, String message) {
+    public BadRequestException(String status, String message, String fieldName) {
         super(message);
         this.status = status;
         this.errorMessage = message;
+        this.fieldName = fieldName;
     }
 
     public String getStatus() {
@@ -24,5 +26,9 @@ public class BadRequestException extends Exception {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 }
