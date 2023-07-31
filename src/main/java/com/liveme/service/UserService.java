@@ -4,13 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.liveme.entity.Thumbnail;
 import com.liveme.entity.UserInfo;
+import com.liveme.exception.BadRequestException;
+import com.liveme.exception.SuccessException;
 import com.liveme.repository.UserInfoRepository;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Service
 public class UserService {
@@ -28,21 +38,30 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String addUser(UserInfo userInfo) {
+    public void addNewUser(UserInfo userInfo) throws BadRequestException, SuccessException {
         String username = userInfo.getName();
         String email = userInfo.getEmail();
 
+        if (username == null || username.isEmpty()) {
+            throw new BadRequestException("Ошибка", "Имя пользователя не может быть пустым.");
+        }
+
+        if (email == null || email.isEmpty()) {
+            throw new BadRequestException("Ошибка", "Адрес электронной почты не может быть пустым.");
+        }
+
         if (repository.findByName(username).isPresent()) {
-            throw new IllegalArgumentException("Имя пользователя уже существует.");
+            throw new BadRequestException("Ошибка", "Имя пользователя уже существует.");
         }
 
         if (repository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("Адрес электронной почты уже существует.");
+            throw new BadRequestException("Ошибка", "Адрес электронной почты уже существует.");
         }
 
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
-        return "Пользователь добавлен в систему";
+
+        throw new SuccessException("Успешно", "Пользователь добавлен в систему.");
     }
 
     public UserInfo getUserByName(String username) {

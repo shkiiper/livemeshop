@@ -51,17 +51,12 @@ public class JwtService {
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 30)); // Например, срок
-                                                                                                     // действия 30
-                                                                                                     // минут
+        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 30));
     }
 
     public String generateRefreshToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)); // Например,
-                                                                                                              // срок
-                                                                                                              // действия
-                                                                                                              // 7 дней
+        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7));
     }
 
     private String createToken(Map<String, Object> claims, String userName, Date expirationDate) {

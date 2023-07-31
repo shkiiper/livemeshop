@@ -49,9 +49,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else if (refreshToken != null && jwtService.validateToken(refreshToken, userDetails)) {
-                String newAccessToken = jwtService.generateToken(username); // Создаем новый Access Token
-                response.setHeader("Authorization", "Bearer " + newAccessToken); // Устанавливаем новый Access Token в
-                                                                                 // заголовке ответа
+                String newAccessToken = jwtService.generateToken(username);
+                response.setHeader("Authorization", "Bearer " + newAccessToken);
             }
         }
         filterChain.doFilter(request, response);
