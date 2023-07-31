@@ -46,12 +46,14 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(authRequest.getName(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(authRequest.getName());
-            UserInfo user = service.getUserByName(authRequest.getName());
+            String username = authRequest.getName();
+            String accessToken = jwtService.generateToken(username);
+            String refreshToken = jwtService.generateRefreshToken(username);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("user", user);
+            response.put("user", service.getUserByName(username));
+            response.put("accessToken", accessToken);
+            response.put("refreshToken", refreshToken);
 
             return ResponseEntity.ok(response);
         } else {
@@ -90,15 +92,22 @@ public class UserController {
     // }
     // }
     @PatchMapping
-    public ResponseEntity<String> updateUser(@RequestBody UserInfo userInfo, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserInfo userInfo,
+            Authentication authentication) {
         // Получаем имя текущего аутентифицированного пользователя из токена
         String currentUsername = authentication.getName();
 
         try {
-            service.updateUser(currentUsername, userInfo);
-            return ResponseEntity.ok("Пользователь успешно обновлен");
+            // Обновляем данные пользователя в базе данных и получаем Map с новым именем и
+            // Access Token
+            Map<String, Object> response = service.updateUser(currentUsername, userInfo);
+
+            // Возвращаем Map с информацией об обновленном имени и новом Access Token в
+            // ответе
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            // Возвращаем сообщение об ошибке с кодом 400 (Bad Request)
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

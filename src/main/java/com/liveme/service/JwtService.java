@@ -3,8 +3,6 @@ package com.liveme.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoder;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -53,20 +51,30 @@ public class JwtService {
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
+        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 30)); // Например, срок
+                                                                                                     // действия 30
+                                                                                                     // минут
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    public String generateRefreshToken(String userName) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userName, new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)); // Например,
+                                                                                                              // срок
+                                                                                                              // действия
+                                                                                                              // 7 дней
+    }
+
+    private String createToken(Map<String, Object> claims, String userName, Date expirationDate) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(expirationDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = SECRET.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

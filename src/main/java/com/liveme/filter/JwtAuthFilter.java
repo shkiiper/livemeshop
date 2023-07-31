@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.aspectj.weaver.patterns.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,20 +30,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-        String token = null;
+        String accessToken = null;
+        String refreshToken = null;
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            accessToken = authHeader.substring(7);
+            username = jwtService.extractUsername(accessToken);
+        } else if (authHeader != null && authHeader.startsWith("Refresh ")) {
+            refreshToken = authHeader.substring(8);
+            username = jwtService.extractUsername(refreshToken);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
+            if (accessToken != null && jwtService.validateToken(accessToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else if (refreshToken != null && jwtService.validateToken(refreshToken, userDetails)) {
+                String newAccessToken = jwtService.generateToken(username); // Создаем новый Access Token
+                response.setHeader("Authorization", "Bearer " + newAccessToken); // Устанавливаем новый Access Token в
+                                                                                 // заголовке ответа
             }
         }
         filterChain.doFilter(request, response);

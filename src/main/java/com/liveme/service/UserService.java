@@ -1,5 +1,8 @@
 package com.liveme.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,8 +15,15 @@ import com.liveme.repository.UserInfoRepository;
 @Service
 public class UserService {
 
+    private final UserInfoRepository repository;
+    private final JwtService jwtService;
+
     @Autowired
-    private UserInfoRepository repository;
+    public UserService(UserInfoRepository repository, JwtService jwtService, PasswordEncoder passwordEncoder) {
+        this.repository = repository;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -43,30 +53,12 @@ public class UserService {
         return repository.findById(id).orElse(null);
     }
 
-    // public String updateUser(UserInfo userInfo) {
-    // if (userInfo.getId() == 0) {
-    // throw new IllegalArgumentException("User ID cannot be zero");
-    // }
-
-    // UserInfo existingUser = repository.findById(userInfo.getId()).orElse(null);
-    // if (existingUser != null) {
-    // existingUser.setName(userInfo.getName());
-    // existingUser.setEmail(userInfo.getEmail());
-    // existingUser.setPhone(userInfo.getPhone());
-    // repository.save(existingUser);
-    // return "User updated successfully";
-    // } else {
-    // throw new IllegalArgumentException("User not found with ID: " +
-    // userInfo.getId());
-    // }
-    // }
-    public String updateUser(String currentUsername, UserInfo updatedUserInfo) {
+    public Map<String, Object> updateUser(String currentUsername, UserInfo updatedUserInfo) {
         UserInfo existingUser = repository.findByName(currentUsername).orElse(null);
         if (existingUser == null) {
             throw new IllegalArgumentException("Текущий пользователь не найден в базе данных.");
         }
 
-        // Проверяем, какие поля переданы в объекте updatedUserInfo и обновляем их
         if (updatedUserInfo.getName() != null) {
             existingUser.setName(updatedUserInfo.getName());
         }
@@ -77,9 +69,17 @@ public class UserService {
             existingUser.setPhone(updatedUserInfo.getPhone());
         }
 
-        repository.save(existingUser);
+        existingUser = repository.save(existingUser);
 
-        return "Пользователь успешно обновлен";
+        String newAccessToken = jwtService.generateToken(existingUser.getName());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("username", existingUser.getName());
+        response.put("email", existingUser.getEmail());
+        response.put("phone", existingUser.getPhone());
+        response.put("accessToken", newAccessToken);
+
+        return response;
     }
 
     public String deleteUser(int id) {
