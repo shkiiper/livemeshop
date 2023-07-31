@@ -41,15 +41,25 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refreshToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Получаем имя текущего пользователя
+    public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Missing or empty 'refreshToken' field.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        String username = jwtService.extractUsername(refreshToken);
+        if (username == null || username.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid refresh token.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
 
         String accessToken = jwtService.generateToken(username);
-
         String newRefreshToken = jwtService.generateRefreshToken(username);
 
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("accessToken", accessToken);
         response.put("refreshToken", newRefreshToken);
 
