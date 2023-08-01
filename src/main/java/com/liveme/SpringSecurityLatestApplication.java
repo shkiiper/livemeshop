@@ -20,9 +20,9 @@ public class SpringSecurityLatestApplication {
 		UserInfoRepository userInfoRepository = context.getBean(UserInfoRepository.class);
 		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class); // Внедряем PasswordEncoder
 
-		Role adminRole = new Role(1, "Админ");
-		Role managerRole = new Role(2, "Менеджер");
-		Role clientRole = new Role(3, "Клиент");
+		Role adminRole = new Role(1, "admin");
+		Role managerRole = new Role(2, "manager");
+		Role clientRole = new Role(3, "client");
 
 		roleRepository.save(adminRole);
 		roleRepository.save(managerRole);
