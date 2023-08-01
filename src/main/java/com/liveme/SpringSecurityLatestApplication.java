@@ -18,7 +18,7 @@ public class SpringSecurityLatestApplication {
 
 		RoleRepository roleRepository = context.getBean(RoleRepository.class);
 		UserInfoRepository userInfoRepository = context.getBean(UserInfoRepository.class);
-		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class); // Внедряем PasswordEncoder
+		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
 
 		Role adminRole = new Role(1, "admin");
 		Role managerRole = new Role(2, "manager");
@@ -28,7 +28,6 @@ public class SpringSecurityLatestApplication {
 		roleRepository.save(managerRole);
 		roleRepository.save(clientRole);
 
-		// Создаем пользователей и хешируем пароли
 		UserInfo admin1 = new UserInfo(1, "shkipper", "shygaev.xxx@gmail.com", passwordEncoder.encode("password"),
 				"+996507755011", adminRole, null);
 		UserInfo admin2 = new UserInfo(2, "admin", "admin@gmail.com", passwordEncoder.encode("password"),
