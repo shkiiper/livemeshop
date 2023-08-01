@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.liveme.dto.AuthRequest;
+import com.liveme.entity.Role;
 import com.liveme.entity.UserInfo;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
@@ -41,56 +42,31 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // @PostMapping
-    // public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
-    // try {
-    // service.addNewUser(userInfo);
-    // return ResponseEntity.ok("Пользователь добавлен в систему.");
-    // } catch (BadRequestException ex) {
-    // Map<String, String> errorResponse = new HashMap<>();
-    // errorResponse.put("status", ex.getStatus());
-    // errorResponse.put("errorMessage", ex.getErrorMessage());
-    // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    // } catch (SuccessException ex) {
-    // Map<String, String> successResponse = new HashMap<>();
-    // successResponse.put("status", ex.getStatus());
-    // successResponse.put("message", ex.getMessage());
-    // return ResponseEntity.ok(successResponse);
-    // }
-    // }
+    @GetMapping
+    public ResponseEntity<List<UserInfo>> getAllRoles() {
+        List<UserInfo> userInfos = service.getAllUsers();
+        return new ResponseEntity<>(userInfos, HttpStatus.OK);
+    }
 
-    // @GetMapping("/current-user")
-    // public UserInfo getCurrentUser() {
-    // Authentication authentication =
-    // SecurityContextHolder.getContext().getAuthentication();
-    // String username = authentication.getName();
+    @GetMapping("/{id}")
+    public ResponseEntity<UserInfo> getUserById(@PathVariable int id) {
+        UserInfo userInfo = service.getUserById(id);
+        if (userInfo != null) {
+            return new ResponseEntity<>(userInfo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
-    // return service.getUserByName(username);
-    // }
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<UserInfo> getUserById(@PathVariable int id) {
-    // UserInfo user = service.getUserById(id);
-    // if (user != null) {
-    // return ResponseEntity.ok(user);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
-
-    // @PatchMapping
-    // public ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserInfo
-    // userInfo,
-    // Authentication authentication) {
-    // String currentUsername = authentication.getName();
-
-    // try {
-    // Map<String, Object> response = service.updateUser(currentUsername, userInfo);
-    // return ResponseEntity.ok(response);
-    // } catch (IllegalArgumentException e) {
-    // return ResponseEntity.badRequest().body(null);
-    // }
-    // }
+    @PutMapping("/{id}")
+    public ResponseEntity<UserInfo> updateUserInfo(@PathVariable int id, @RequestBody UserInfo userInfo) {
+        UserInfo updateUserInfo = service.updateUserInfo(id, userInfo);
+        if (updateUserInfo != null) {
+            return new ResponseEntity<>(updateUserInfo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id) {

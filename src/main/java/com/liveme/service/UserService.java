@@ -1,6 +1,7 @@
 package com.liveme.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.liveme.entity.Role;
 import com.liveme.entity.Thumbnail;
 import com.liveme.entity.UserInfo;
 import com.liveme.exception.BadRequestException;
@@ -109,5 +111,14 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("User not found with ID: " + id);
         }
+    }
+
+    public List<UserInfo> getAllUsers() {
+        return repository.findAll();
+    }
+
+    public UserInfo updateUserInfo(int id, UserInfo userInfo) {
+        userInfo.setId(id);
+        return repository.save(userInfo);
     }
 }

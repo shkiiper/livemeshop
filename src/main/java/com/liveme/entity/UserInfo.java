@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -40,4 +41,11 @@ public class UserInfo {
     @ManyToOne
     @JoinColumn(name = "warhouse_id")
     private Warhouse warhouse;
+
+    @PrePersist
+    public void setDefaultRole() {
+        if (role == null) {
+            role = new Role(3, "Клиент");
+        }
+    }
 }
