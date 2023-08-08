@@ -3,10 +3,12 @@ package com.liveme.controller;
 import com.liveme.dto.AuthRequest;
 import com.liveme.entity.UserInfo;
 import com.liveme.exception.BadRequestException;
-import com.liveme.exception.InvalidTokenException;
 import com.liveme.exception.SuccessException;
 import com.liveme.service.JwtService;
 import com.liveme.service.UserService;
+
+import io.jsonwebtoken.ExpiredJwtException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +24,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private UserService userService;
@@ -42,57 +46,37 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody Map<String, String> request) {
-        String refreshToken = request.get("refreshToken");
-        if (refreshToken == null || refreshToken.isEmpty()) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Missing or empty 'refreshToken' field.");
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-
-        String username = jwtService.extractUsername(refreshToken);
-        if (username == null || username.isEmpty()) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid refresh token.");
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-
-        String accessToken = jwtService.generateToken(username);
-        String newRefreshToken = jwtService.generateRefreshToken(username);
-
         Map<String, Object> response = new HashMap<>();
-        response.put("accessToken", accessToken);
-        response.put("refreshToken", newRefreshToken);
+        try {
+            String refreshToken = request.get("refreshToken");
+            if (refreshToken == null || refreshToken.isEmpty()) {
+                throw new BadRequestException("Ошибка", "Missing or empty 'refreshToken' field.", "refreshToken");
+            }
 
+            String username = jwtService.extractUsername(refreshToken);
+            if (username == null || username.isEmpty()) {
+                throw new BadRequestException("Ошибка", "Invalid refresh token.", "refreshToken");
+            }
+
+            String accessToken = jwtService.generateToken(username);
+            String newRefreshToken = jwtService.generateRefreshToken(username);
+
+            response.put("accessToken", accessToken);
+            response.put("refreshToken", newRefreshToken);
+        } catch (ExpiredJwtException e) {
+            response.put("status", "Ошибка");
+            response.put("errorMessage", "Токен истек");
+            response.put("errorCode", "TOKEN_EXPIRED");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (BadRequestException e) {
+            response.put("status", e.getStatus());
+            response.put("errorMessage", e.getErrorMessage());
+            response.put("fieldName", e.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         return ResponseEntity.ok(response);
     }
 
-    // @PostMapping("/login")
-    // public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest
-    // authRequest) {
-    // try {
-
-    // Authentication authentication = authenticationManager.authenticate(
-    // new UsernamePasswordAuthenticationToken(authRequest.getName(),
-    // authRequest.getPassword()));
-
-    // if (authentication.isAuthenticated()) {
-    // String username = authRequest.getName();
-    // String accessToken = jwtService.generateToken(username);
-    // String refreshToken = jwtService.generateRefreshToken(username);
-
-    // Map<String, Object> response = new HashMap<>();
-    // response.put("user", userService.getUserByName(username));
-    // response.put("accessToken", accessToken);
-    // response.put("refreshToken", refreshToken);
-
-    // return ResponseEntity.ok(response);
-    // } else {
-    // throw new UsernameNotFoundException("Invalid user request!");
-    // }
-    // } catch (BadCredentialsException e) {
-    // throw new UsernameNotFoundException("Invalid username or password");
-    // }
-    // }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
@@ -145,11 +129,19 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public UserInfo getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        return userService.getUserByName(username);
+    public ResponseEntity<?> getCurrentUser() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            LOGGER.debug("getCurrentUser() called for user: {}", username);
+            UserInfo userInfo = userService.getUserByName(username);
+            return ResponseEntity.ok(userInfo);
+        } catch (ExpiredJwtException e) {
+            LOGGER.error("Error occurred during getCurrentUser()", e);
+            String errorMessage = "Токен истек. Пожалуйста, выполните повторную аутентификацию.";
+            LOGGER.error("Error occurred during getCurrentUser()", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+        }
     }
 
     @PatchMapping("me")

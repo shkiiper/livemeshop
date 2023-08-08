@@ -1,17 +1,21 @@
 package com.liveme.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtService {
@@ -40,13 +44,32 @@ public class JwtService {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    // private Boolean isTokenExpired(String token) {
+    // final Date expiration = extractExpiration(token);
+    // return expiration.before(new Date());
+    // }
+    public ResponseEntity<String> isTokenExpired(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(SECRET.getBytes())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            Date expirationDate = claims.getExpiration();
+            if (expirationDate != null && expirationDate.before(new Date())) {
+                return new ResponseEntity<>("Токен истек", HttpStatus.UNAUTHORIZED);
+            } else {
+                return new ResponseEntity<>("Токен действителен", HttpStatus.OK);
+            }
+        } catch (ExpiredJwtException ex) {
+            return new ResponseEntity<>("Токен истек", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token).getStatusCode().isError());
     }
 
     public String generateToken(String userName) {
