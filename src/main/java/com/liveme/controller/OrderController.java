@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.liveme.entity.Order;
+import com.liveme.exception.BadRequestException;
 import com.liveme.service.OrderService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
@@ -20,41 +23,71 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping
-    public ResponseEntity<String> createOrder(@RequestBody Order order) {
-        orderService.createOrder(order);
-        return new ResponseEntity<>("Order created successfully!", HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int id) {
-        Order order = orderService.getOrderById(id);
-        if (order != null) {
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getOrderById(@PathVariable int id) {
+        try {
+            Order order = orderService.getOrderById(id);
+            return ResponseEntity.ok(order);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createOrder(@RequestBody Order order) {
+        try {
+            Order createdOrder = orderService.createOrder(order);
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("status", "Успешно");
+            successResponse.put("message", "Order created");
+            return ResponseEntity.ok(successResponse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable int id, @RequestBody Order order) {
-        Order updatedOrder = orderService.updateOrder(id, order);
-        if (updatedOrder != null) {
-            return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateOrder(@PathVariable int id, @RequestBody Order order) {
+        try {
+            Order updatedOrder = orderService.updateOrder(id, order);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable int id) {
-        orderService.deleteOrder(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteOrder(@PathVariable int id) {
+        try {
+            orderService.deleteOrder(id);
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("status", "Успешно");
+            successResponse.put("message", "Order deleted");
+            return ResponseEntity.ok(successResponse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 }

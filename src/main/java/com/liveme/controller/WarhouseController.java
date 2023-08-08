@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.liveme.entity.Warhouse;
+import com.liveme.exception.BadRequestException;
 import com.liveme.service.WarhouseService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/warhous")
@@ -20,41 +23,79 @@ public class WarhouseController {
         this.warhouseService = warhouseService;
     }
 
-    @PostMapping
-    public ResponseEntity<String> createWarhouse(@RequestBody Warhouse warhouse) {
-        warhouseService.createWarhouse(warhouse);
-        return new ResponseEntity<>("Warhouse created successfully!", HttpStatus.CREATED);
-    }
-
     @GetMapping
-    public ResponseEntity<List<Warhouse>> getAllWarhouses() {
-        List<Warhouse> warehouses = warhouseService.getAllWarhouses();
-        return new ResponseEntity<>(warehouses, HttpStatus.OK);
+    public ResponseEntity<?> getAllWarhouses() {
+        try {
+            List<Warhouse> warhouses = warhouseService.getAllWarhouses();
+            return ResponseEntity.ok(warhouses);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Warhouse> getWarhouseById(@PathVariable int id) {
-        Warhouse warhouse = warhouseService.getWarhouseById(id);
-        if (warhouse != null) {
-            return new ResponseEntity<>(warhouse, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getWarhouseById(@PathVariable int id) {
+        try {
+            Warhouse warhouse = warhouseService.getWarhouseById(id);
+            return ResponseEntity.ok(warhouse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createWarhouse(@RequestBody Warhouse warhouse) {
+        try {
+            Warhouse createdWarhouse = warhouseService.createWarhouse(warhouse);
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("status", "Успешно");
+            successResponse.put("message", "Warhouse created");
+            return ResponseEntity.ok(successResponse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Warhouse> updateWarhouse(@PathVariable int id, @RequestBody Warhouse warhouse) {
-        Warhouse updatedWarhouse = warhouseService.updateWarhouse(id, warhouse);
-        if (updatedWarhouse != null) {
-            return new ResponseEntity<>(updatedWarhouse, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateWarhouse(@PathVariable int id, @RequestBody Warhouse warhouse) {
+        try {
+            Warhouse updatedWarhouse = warhouseService.updateWarhouse(id, warhouse);
+            return ResponseEntity.ok(updatedWarhouse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWarhouse(@PathVariable int id) {
-        warhouseService.deleteWarhouse(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteWarhouse(@PathVariable int id) {
+        try {
+            warhouseService.deleteWarhouse(id);
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("status", "Успешно");
+            successResponse.put("message", "Warhouse deleted");
+            return ResponseEntity.ok(successResponse);
+        } catch (BadRequestException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("errorMessage", ex.getErrorMessage());
+            errorResponse.put("fieldName", ex.getFieldName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 }

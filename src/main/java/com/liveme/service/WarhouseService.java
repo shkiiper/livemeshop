@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.liveme.entity.Thumbnail;
 import com.liveme.entity.Warhouse;
+import com.liveme.exception.BadRequestException;
 import com.liveme.repository.WarhouseRepository;
 
 import java.util.List;
@@ -18,25 +19,54 @@ public class WarhouseService {
         this.warhouseRepository = warhouseRepository;
     }
 
-    public String createWarhouse(Warhouse warhouse) {
-        warhouseRepository.save(warhouse);
-        return "Warhouse created successfully!";
+    public Warhouse createWarhouse(Warhouse warhouse) throws BadRequestException {
+        if (warhouse == null || warhouse.getRegion() == null || warhouse.getRegion().isEmpty()) {
+            throw new BadRequestException("Ошибка", "Invalid warhouse data", "warhouse");
+        }
+
+        Warhouse createdWarhouse = warhouseRepository.save(warhouse);
+
+        return createdWarhouse;
     }
 
-    public List<Warhouse> getAllWarhouses() {
-        return warhouseRepository.findAll();
+    public List<Warhouse> getAllWarhouses() throws BadRequestException {
+        List<Warhouse> warhouses = warhouseRepository.findAll();
+        if (warhouses.isEmpty()) {
+            throw new BadRequestException("Ошибка", "Нет доступных складов", "warhouses");
+        }
+        return warhouses;
     }
 
-    public Warhouse getWarhouseById(int id) {
-        return warhouseRepository.findById(id).orElse(null);
+    public Warhouse getWarhouseById(int id) throws BadRequestException {
+        Warhouse warhouse = warhouseRepository.findById(id).orElse(null);
+        if (warhouse == null) {
+            throw new BadRequestException("Ошибка", "Склад с указанным ID не найден", "id");
+        }
+        return warhouse;
     }
 
-    public Warhouse updateWarhouse(int id, Warhouse warhouse) {
+    public Warhouse updateWarhouse(int id, Warhouse warhouse) throws BadRequestException {
+        if (warhouse == null || warhouse.getRegion() == null || warhouse.getRegion().isEmpty()) {
+            throw new BadRequestException("Ошибка", "Invalid warhouse data", "warhouse");
+        }
+
+        Warhouse existingWarhouse = warhouseRepository.findById(id).orElse(null);
+        if (existingWarhouse == null) {
+            throw new BadRequestException("Ошибка", "Склад с указанным ID не найден", "id");
+        }
+
         warhouse.setId(id);
-        return warhouseRepository.save(warhouse);
+        Warhouse updatedWarhouse = warhouseRepository.save(warhouse);
+
+        return updatedWarhouse;
     }
 
-    public void deleteWarhouse(int id) {
+    public void deleteWarhouse(int id) throws BadRequestException {
+        Warhouse existingWarhouse = warhouseRepository.findById(id).orElse(null);
+        if (existingWarhouse == null) {
+            throw new BadRequestException("Ошибка", "Склад с указанным ID не найден", "id");
+        }
+
         warhouseRepository.deleteById(id);
     }
 
