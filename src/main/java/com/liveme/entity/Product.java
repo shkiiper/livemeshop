@@ -1,5 +1,7 @@
 package com.liveme.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,11 +36,12 @@ public class Product {
     private boolean published;
     private double rating;
 
-    @ManyToOne(fetch = FetchType.LAZY) // если нужно всегда загружать галерею
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
     private Gallery gallery;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Category category;
 }
