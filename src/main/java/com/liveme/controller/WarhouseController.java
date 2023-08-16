@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/warhous")
+@RequestMapping("/warhouse")
 public class WarhouseController {
     private final WarhouseService warhouseService;
 
