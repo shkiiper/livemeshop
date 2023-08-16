@@ -63,8 +63,22 @@ public class ProductService {
     public Product updateProduct(int id, Product product) throws BadRequestException {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
-            product.setId(id);
-            return productRepository.save(product);
+            Product existingProduct = productOptional.get();
+
+            if (product.getName() != null && !product.getName().isEmpty()) {
+                existingProduct.setName(product.getName());
+            }
+
+            existingProduct.setPrice(product.getPrice());
+            existingProduct.setSale_price(product.getSale_price());
+            existingProduct.setShort_description(product.getShort_description());
+            existingProduct.setFull_description(product.getFull_description());
+            existingProduct.setPublished(product.isPublished());
+            existingProduct.setRating(product.getRating());
+            existingProduct.setGallery(product.getGallery());
+            existingProduct.setCategory(product.getCategory());
+
+            return productRepository.save(existingProduct);
         } else {
             throw new BadRequestException("Ошибка", "Продукт с указанным ID не найден", "id");
         }
