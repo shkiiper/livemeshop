@@ -42,7 +42,7 @@ public class RoleController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Role> updateRole(@PathVariable int id, @RequestBody Role role) {
         Role updatedRole = roleService.updateRole(id, role);
         if (updatedRole != null) {

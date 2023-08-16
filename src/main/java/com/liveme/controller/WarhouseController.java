@@ -68,7 +68,7 @@ public class WarhouseController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateWarhouse(@PathVariable int id, @RequestBody Warhouse warhouse) {
         try {
             Warhouse updatedWarhouse = warhouseService.updateWarhouse(id, warhouse);

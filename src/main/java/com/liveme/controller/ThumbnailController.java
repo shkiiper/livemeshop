@@ -34,7 +34,7 @@ public class ThumbnailController {
         return thumbnailService.createThumbnail(thumbnail);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public Thumbnail updateThumbnail(@PathVariable int id, @RequestBody Thumbnail thumbnail) {
         return thumbnailService.updateThumbnail(id, thumbnail);
     }

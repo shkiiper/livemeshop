@@ -34,7 +34,7 @@ public class GalleryController {
         return galleryService.createGallery(gallery);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public Gallery updateGallery(@PathVariable int id, @RequestBody Gallery gallery) {
         return galleryService.updateGallery(id, gallery);
     }

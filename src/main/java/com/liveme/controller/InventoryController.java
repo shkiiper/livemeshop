@@ -42,7 +42,7 @@ public class InventoryController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Inventory> updateInventory(@PathVariable int id, @RequestBody Inventory inventory) {
         Inventory updatedInventory = inventoryService.updateInventory(id, inventory);
         if (updatedInventory != null) {

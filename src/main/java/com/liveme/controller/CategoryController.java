@@ -70,7 +70,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable int id, @RequestBody Category category) {
         try {
             categoryService.updateCategory(id, category);

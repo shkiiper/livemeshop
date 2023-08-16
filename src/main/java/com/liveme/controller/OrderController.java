@@ -60,7 +60,7 @@ public class OrderController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable int id, @RequestBody Order order) {
         try {
             Order updatedOrder = orderService.updateOrder(id, order);
