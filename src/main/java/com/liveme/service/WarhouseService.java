@@ -3,7 +3,6 @@ package com.liveme.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.liveme.entity.Thumbnail;
 import com.liveme.entity.Warhouse;
 import com.liveme.exception.BadRequestException;
 import com.liveme.repository.WarhouseRepository;
@@ -22,6 +21,10 @@ public class WarhouseService {
     public Warhouse createWarhouse(Warhouse warhouse) throws BadRequestException {
         if (warhouse == null || warhouse.getRegion() == null || warhouse.getRegion().isEmpty()) {
             throw new BadRequestException("Ошибка", "Invalid warhouse data", "warhouse");
+        }
+        Warhouse existingWarhouse = warhouseRepository.findByRegion(warhouse.getRegion());
+        if (existingWarhouse != null) {
+            throw new BadRequestException("Ошибка", "такой склад уже существует", "warhouse");
         }
 
         Warhouse createdWarhouse = warhouseRepository.save(warhouse);

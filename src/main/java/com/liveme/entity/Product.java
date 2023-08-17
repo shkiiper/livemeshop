@@ -38,6 +38,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Gallery gallery;
 
     @ManyToOne(fetch = FetchType.LAZY)

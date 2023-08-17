@@ -1,6 +1,8 @@
 package com.liveme.service;
 
+import com.liveme.entity.Gallery;
 import com.liveme.entity.Product;
+import com.liveme.repository.GalleryRepository;
 import com.liveme.repository.ProductRepository;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
@@ -13,11 +15,14 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
+    private final GalleryRepository galleryRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, GalleryRepository galleryRepository) {
         this.productRepository = productRepository;
+        this.galleryRepository = galleryRepository;
     }
 
     public List<Product> getAllProducts() {
@@ -54,6 +59,10 @@ public class ProductService {
         if (productRepository.existsByName(product.getName())) {
             throw new BadRequestException("Ошибка", "Product with this name already exists", "name");
         }
+        Gallery gallery = new Gallery();
+        galleryRepository.save(gallery);
+
+        product.setGallery(gallery);
 
         Product createdProduct = productRepository.save(product);
 
