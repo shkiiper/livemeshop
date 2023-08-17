@@ -66,7 +66,7 @@ public class ProductService {
 
         Product createdProduct = productRepository.save(product);
 
-        throw new SuccessException("Успешно", "Product created");
+        return createdProduct;
     }
 
     public Product updateProduct(int id, Product product) throws BadRequestException {
