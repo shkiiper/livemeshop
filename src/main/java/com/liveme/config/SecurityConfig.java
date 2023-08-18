@@ -45,14 +45,15 @@ public class SecurityConfig {
                         "/product/**",
                         "/categories/**",
                         "/gallery/**",
-                        "/thumbnail/**",
+                        "/thumbnails/**",
                         "/orders/**",
                         "/warhouse/**",
                         "/inventory/**",
                         "/review/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**")
+                        "/v3/api-docs/**",
+                        "/media/**")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/users/**")

@@ -9,14 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
 @Service
 public class ThumbnailService {
+    @Value("${media.directory}")
+    private String mediaDirectory;
     private final ThumbnailRepository thumbnailRepository;
 
     @Autowired
@@ -35,15 +44,14 @@ public class ThumbnailService {
     public Thumbnail createThumbnail(MultipartFile imageFile, int position)
             throws BadRequestException, SuccessException {
         try {
-            if (imageFile.isEmpty()) {
-                throw new BadRequestException("Ошибка", "Изображение не загружено", "image");
-            }
-
-            if (imageFile.getSize() > 10 * 1024 * 1024) {
-                throw new BadRequestException("Ошибка", "Размер изображения превышает 10 МБ", "image");
-            }
-
             byte[] imageBytes = imageFile.getBytes();
+
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            String thumbnailFilePath = mediaDirectory + fileName;
+
+            Path targetLocation = Path.of(thumbnailFilePath);
+
+            Files.copy(imageFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             Thumbnail thumbnail = new Thumbnail();
             thumbnail.setImage(imageBytes);
@@ -51,18 +59,22 @@ public class ThumbnailService {
 
             Thumbnail createdThumbnail = thumbnailRepository.save(thumbnail);
 
-            throw new SuccessException("Успешно", "Thumbnail создан");
+            return createdThumbnail;
+
         } catch (IOException e) {
             throw new BadRequestException("Ошибка", "Ошибка при обработке изображения", "image");
         }
     }
 
-    public Thumbnail updateThumbnail(int id, Thumbnail thumbnail) throws BadRequestException {
+    public Thumbnail updateThumbnail(int id, Thumbnail updatedThumbnail) throws BadRequestException {
         Thumbnail existingThumbnail = thumbnailRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Ошибка", "Изображение не найдено", "id"));
 
-        thumbnail.setId(id);
-        return thumbnailRepository.save(thumbnail);
+        existingThumbnail.setImage(updatedThumbnail.getImage()); // Обновляем изображение (если необходимо)
+        existingThumbnail.setPosition(updatedThumbnail.getPosition()); // Обновляем позицию (если необходимо)
+        existingThumbnail.setLink(updatedThumbnail.getLink()); // Обновляем ссылку (если необходимо)
+
+        return thumbnailRepository.save(existingThumbnail);
     }
 
     public void deleteThumbnail(int id) throws BadRequestException {

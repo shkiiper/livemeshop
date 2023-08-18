@@ -25,6 +25,7 @@ public class Thumbnail {
     @Size(max = 10 * 1024 * 1024, message = "Максимальный размер изображения превышен")
     private byte[] image;
     private int position;
+    private String link;
 
     @ManyToOne
     @JoinColumn(name = "gallery_id")
