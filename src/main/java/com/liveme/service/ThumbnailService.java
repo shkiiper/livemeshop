@@ -1,23 +1,19 @@
 package com.liveme.service;
 
+import com.liveme.entity.Gallery;
 import com.liveme.entity.Thumbnail;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
 import com.liveme.repository.ThumbnailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -41,7 +37,7 @@ public class ThumbnailService {
         return thumbnailRepository.findById(id).orElse(null);
     }
 
-    public Thumbnail createThumbnail(MultipartFile imageFile, int position)
+    public Thumbnail createThumbnail(MultipartFile imageFile, int position, int galleryId)
             throws BadRequestException, SuccessException {
         try {
             byte[] imageBytes = imageFile.getBytes();
@@ -56,6 +52,10 @@ public class ThumbnailService {
             Thumbnail thumbnail = new Thumbnail();
             thumbnail.setImage(imageBytes);
             thumbnail.setPosition(position);
+
+            Gallery gallery = new Gallery();
+            gallery.setId(galleryId);
+            thumbnail.setGallery(gallery);
 
             Thumbnail createdThumbnail = thumbnailRepository.save(thumbnail);
 

@@ -45,18 +45,36 @@ public class ThumbnailController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Thumbnail>> getAllThumbnailsWithImageLinks() {
+    public ResponseEntity<List<Map<String, Object>>> getAllThumbnailsWithImageLinks() {
         List<Thumbnail> thumbnails = thumbnailService.getAllThumbnails();
-        return ResponseEntity.ok(thumbnails);
+
+        List<Map<String, Object>> thumbnailList = new ArrayList<>();
+        for (Thumbnail thumbnail : thumbnails) {
+            Map<String, Object> thumbnailInfo = new HashMap<>();
+            thumbnailInfo.put("id", thumbnail.getId());
+            thumbnailInfo.put("link", thumbnail.getLink());
+            thumbnailInfo.put("position", thumbnail.getPosition());
+            thumbnailInfo.put("galleryId", thumbnail.getGallery().getId());
+            thumbnailList.add(thumbnailInfo);
+        }
+
+        return ResponseEntity.ok(thumbnailList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Thumbnail> getThumbnailById(@PathVariable int id) {
+    public ResponseEntity<Map<String, Object>> getThumbnailById(@PathVariable int id) {
         Thumbnail thumbnail = thumbnailService.getThumbnailById(id);
         if (thumbnail == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(thumbnail);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", thumbnail.getId());
+        response.put("position", thumbnail.getPosition());
+        response.put("link", thumbnail.getLink());
+        response.put("galleryId", thumbnail.getGallery().getId());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/media/{fileName:.+}")
@@ -78,9 +96,10 @@ public class ThumbnailController {
     @PostMapping
     @PermitAll
     public ResponseEntity<?> createThumbnail(@RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("position") int position) throws SuccessException {
+            @RequestParam("position") int position,
+            @RequestParam("galleryId") int galleryId) throws SuccessException {
         try {
-            Thumbnail createdThumbnail = thumbnailService.createThumbnail(imageFile, position);
+            Thumbnail createdThumbnail = thumbnailService.createThumbnail(imageFile, position, galleryId);
 
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                     .getRequest();
@@ -96,7 +115,6 @@ public class ThumbnailController {
             successResponse.put("status", "Успешно");
             successResponse.put("message", "Thumbnail создан");
             successResponse.put("thumbnail", createdThumbnail);
-
             return ResponseEntity.ok(successResponse);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();
