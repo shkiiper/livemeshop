@@ -52,13 +52,14 @@ public class ProductService {
             throw new BadRequestException("Ошибка", "Invalid product data", "product");
         }
 
-        if (product.getPrice() < 0) {
+        if (product.getPrice() != null && product.getPrice() < 0) {
             throw new BadRequestException("Ошибка", "Цена не может быть отрицательной", "price");
         }
 
         if (productRepository.existsByName(product.getName())) {
             throw new BadRequestException("Ошибка", "Product with this name already exists", "name");
         }
+
         Gallery gallery = new Gallery();
         galleryRepository.save(gallery);
 
@@ -78,14 +79,37 @@ public class ProductService {
                 existingProduct.setName(product.getName());
             }
 
-            existingProduct.setPrice(product.getPrice());
-            existingProduct.setSale_price(product.getSale_price());
-            existingProduct.setShort_description(product.getShort_description());
-            existingProduct.setFull_description(product.getFull_description());
-            existingProduct.setPublished(product.isPublished());
-            existingProduct.setRating(product.getRating());
-            existingProduct.setGallery(product.getGallery());
-            existingProduct.setCategory(product.getCategory());
+            if (product.getPrice() != null) {
+                existingProduct.setPrice(product.getPrice());
+            }
+
+            if (product.getSale_price() != null) {
+                existingProduct.setSale_price(product.getSale_price());
+            }
+
+            if (product.getShort_description() != null) {
+                existingProduct.setShort_description(product.getShort_description());
+            }
+
+            if (product.getFull_description() != null) {
+                existingProduct.setFull_description(product.getFull_description());
+            }
+
+            if (product.getPublished() != null && !product.getPublished().equals(existingProduct.getPublished())) {
+                existingProduct.setPublished(product.getPublished());
+            }
+
+            if (product.getRating() != null) {
+                existingProduct.setRating(product.getRating());
+            }
+
+            if (product.getGallery() != null) {
+                existingProduct.setGallery(product.getGallery());
+            }
+
+            if (product.getCategory() != null) {
+                existingProduct.setCategory(product.getCategory());
+            }
 
             return productRepository.save(existingProduct);
         } else {

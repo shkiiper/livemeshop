@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -23,8 +24,10 @@ public class Thumbnail {
     private int id;
     @Lob
     @Size(max = 10 * 1024 * 1024, message = "Максимальный размер изображения превышен")
+    @JsonIgnore
     private byte[] image;
     private int position;
+
     private String link;
 
     @ManyToOne

@@ -1,5 +1,7 @@
 package com.liveme.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liveme.entity.Thumbnail;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -116,20 +119,6 @@ public class ThumbnailController {
             successResponse.put("message", "Thumbnail создан");
             successResponse.put("thumbnail", createdThumbnail);
             return ResponseEntity.ok(successResponse);
-        } catch (BadRequestException ex) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("status", ex.getStatus());
-            errorResponse.put("errorMessage", ex.getErrorMessage());
-            errorResponse.put("fieldName", ex.getFieldName());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> updateThumbnail(@PathVariable int id, @RequestBody Thumbnail updatedThumbnail) {
-        try {
-            Thumbnail existingThumbnail = thumbnailService.updateThumbnail(id, updatedThumbnail);
-            return ResponseEntity.ok(existingThumbnail);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("status", ex.getStatus());

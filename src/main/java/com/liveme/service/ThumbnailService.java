@@ -7,6 +7,7 @@ import com.liveme.exception.SuccessException;
 import com.liveme.repository.ThumbnailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -64,17 +65,6 @@ public class ThumbnailService {
         } catch (IOException e) {
             throw new BadRequestException("Ошибка", "Ошибка при обработке изображения", "image");
         }
-    }
-
-    public Thumbnail updateThumbnail(int id, Thumbnail updatedThumbnail) throws BadRequestException {
-        Thumbnail existingThumbnail = thumbnailRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Ошибка", "Изображение не найдено", "id"));
-
-        existingThumbnail.setImage(updatedThumbnail.getImage()); // Обновляем изображение (если необходимо)
-        existingThumbnail.setPosition(updatedThumbnail.getPosition()); // Обновляем позицию (если необходимо)
-        existingThumbnail.setLink(updatedThumbnail.getLink()); // Обновляем ссылку (если необходимо)
-
-        return thumbnailRepository.save(existingThumbnail);
     }
 
     public void deleteThumbnail(int id) throws BadRequestException {

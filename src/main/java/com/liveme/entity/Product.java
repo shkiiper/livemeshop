@@ -29,12 +29,13 @@ public class Product {
     @NotEmpty(message = "Название продукта не должно быть пустым")
     private String name;
     @Min(value = 0, message = "Цена не может быть отрицательной")
-    private int price;
-    private int sale_price;
+    private Integer price;
+
+    private Integer sale_price;
     private String short_description;
     private String full_description;
-    private boolean published;
-    private double rating;
+    private Boolean published;
+    private Double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id")

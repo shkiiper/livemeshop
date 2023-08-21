@@ -26,6 +26,12 @@ public class InventoryController {
         return new ResponseEntity<>("Inventory created successfully!", HttpStatus.CREATED);
     }
 
+    @PostMapping("/{warehouseId}")
+    public ResponseEntity<String> createInventoryForWarehouse(@PathVariable int warehouseId) {
+        inventoryService.createInventoryForWarehouse(warehouseId);
+        return ResponseEntity.ok("Inventory created successfully");
+    }
+
     @GetMapping
     public ResponseEntity<List<Inventory>> getAllInventories() {
         List<Inventory> inventories = inventoryService.getAllInventories();

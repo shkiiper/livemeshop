@@ -1,9 +1,11 @@
 package com.liveme.controller;
 
+import com.liveme.dto.ThumbnailInfoDTO;
 import com.liveme.entity.Gallery;
 import com.liveme.service.GalleryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,15 @@ public class GalleryController {
         return galleryService.getAllGalleries();
     }
 
-    @GetMapping("/{id}")
-    public Gallery getGalleryById(@PathVariable int id) {
-        return galleryService.getGalleryById(id);
+    @GetMapping("/{galleryId}")
+    public ResponseEntity<List<ThumbnailInfoDTO>> getThumbnailInfoForGallery(@PathVariable int galleryId) {
+        List<ThumbnailInfoDTO> thumbnailInfoList = galleryService.getThumbnailInfoForGallery(galleryId);
+
+        if (thumbnailInfoList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(thumbnailInfoList);
     }
 
     @PostMapping

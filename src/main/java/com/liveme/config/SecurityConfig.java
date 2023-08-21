@@ -48,7 +48,7 @@ public class SecurityConfig {
                         "/thumbnails/**",
                         "/orders/**",
                         "/warhouse/**",
-                        "/inventory/**",
+                        "/inventories/**",
                         "/review/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
