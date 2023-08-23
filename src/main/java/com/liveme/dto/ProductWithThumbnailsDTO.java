@@ -9,9 +9,9 @@ public class ProductWithThumbnailsDTO {
     private int id;
     private String name;
     private Integer price;
-    private Integer salePrice;
-    private String shortDescription;
-    private String fullDescription;
+    private Integer sale_Price;
+    private String short_Description;
+    private String full_Description;
     private Boolean published;
     private Double rating;
     private GalleryDTO gallery;
@@ -22,9 +22,9 @@ public class ProductWithThumbnailsDTO {
         this.id = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();
-        this.salePrice = product.getSale_price();
-        this.shortDescription = product.getShort_description();
-        this.fullDescription = product.getFull_description();
+        this.sale_Price = product.getSale_price();
+        this.short_Description = product.getShort_description();
+        this.full_Description = product.getFull_description();
         this.published = product.getPublished();
         this.rating = product.getRating();
         this.categoryId = product.getCategory().getId();
@@ -63,27 +63,27 @@ public class ProductWithThumbnailsDTO {
     }
 
     public Integer getSalePrice() {
-        return salePrice;
+        return sale_Price;
     }
 
     public void setSalePrice(Integer salePrice) {
-        this.salePrice = salePrice;
+        this.sale_Price = salePrice;
     }
 
     public String getShortDescription() {
-        return shortDescription;
+        return short_Description;
     }
 
     public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+        this.short_Description = shortDescription;
     }
 
     public String getFullDescription() {
-        return fullDescription;
+        return full_Description;
     }
 
     public void setFullDescription(String fullDescription) {
-        this.fullDescription = fullDescription;
+        this.full_Description = fullDescription;
     }
 
     public Boolean getPublished() {
