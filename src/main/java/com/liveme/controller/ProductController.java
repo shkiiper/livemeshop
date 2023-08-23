@@ -45,8 +45,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody Product product) {
         try {
-            Product createdProduct = productService.createProduct(product);
-            return ResponseEntity.ok(createdProduct);
+            ProductWithThumbnailsDTO createdProductDTO = productService.createProductAndReturnDTO(product);
+            return ResponseEntity.ok(createdProductDTO);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("status", ex.getStatus());

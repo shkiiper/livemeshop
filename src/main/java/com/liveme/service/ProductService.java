@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,7 +52,35 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(Product product) throws BadRequestException, SuccessException {
+    // public Product createProduct(Product product) throws BadRequestException,
+    // SuccessException {
+    // if (product == null || product.getName() == null ||
+    // product.getName().isEmpty()) {
+    // throw new BadRequestException("Ошибка", "Invalid product data", "product");
+    // }
+
+    // if (product.getPrice() != null && product.getPrice() < 0) {
+    // throw new BadRequestException("Ошибка", "Цена не может быть отрицательной",
+    // "price");
+    // }
+
+    // if (productRepository.existsByName(product.getName())) {
+    // throw new BadRequestException("Ошибка", "Product with this name already
+    // exists", "name");
+    // }
+
+    // Gallery gallery = new Gallery();
+    // galleryRepository.save(gallery);
+
+    // product.setGallery(gallery);
+
+    // Product createdProduct = productRepository.save(product);
+
+    // return createdProduct;
+    // }
+    @Transactional
+    public ProductWithThumbnailsDTO createProductAndReturnDTO(Product product)
+            throws BadRequestException, SuccessException {
         if (product == null || product.getName() == null || product.getName().isEmpty()) {
             throw new BadRequestException("Ошибка", "Invalid product data", "product");
         }
@@ -65,13 +94,14 @@ public class ProductService {
         }
 
         Gallery gallery = new Gallery();
+        gallery.setThumbnails(new ArrayList<>());
         galleryRepository.save(gallery);
 
         product.setGallery(gallery);
 
         Product createdProduct = productRepository.save(product);
 
-        return createdProduct;
+        return new ProductWithThumbnailsDTO(createdProduct);
     }
 
     public Product updateProduct(int id, Product product) throws BadRequestException {
