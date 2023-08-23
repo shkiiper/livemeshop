@@ -70,7 +70,7 @@ public class ProductWithThumbnailsDTO {
         this.sale_Price = salePrice;
     }
 
-    public String getShort_escription() {
+    public String getShort_description() {
         return short_Description;
     }
 
