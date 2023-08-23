@@ -52,32 +52,6 @@ public class ProductService {
         }
     }
 
-    // public Product createProduct(Product product) throws BadRequestException,
-    // SuccessException {
-    // if (product == null || product.getName() == null ||
-    // product.getName().isEmpty()) {
-    // throw new BadRequestException("Ошибка", "Invalid product data", "product");
-    // }
-
-    // if (product.getPrice() != null && product.getPrice() < 0) {
-    // throw new BadRequestException("Ошибка", "Цена не может быть отрицательной",
-    // "price");
-    // }
-
-    // if (productRepository.existsByName(product.getName())) {
-    // throw new BadRequestException("Ошибка", "Product with this name already
-    // exists", "name");
-    // }
-
-    // Gallery gallery = new Gallery();
-    // galleryRepository.save(gallery);
-
-    // product.setGallery(gallery);
-
-    // Product createdProduct = productRepository.save(product);
-
-    // return createdProduct;
-    // }
     @Transactional
     public ProductWithThumbnailsDTO createProductAndReturnDTO(Product product)
             throws BadRequestException, SuccessException {

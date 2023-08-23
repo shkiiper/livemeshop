@@ -15,8 +15,7 @@ public class ProductWithThumbnailsDTO {
     private Boolean published;
     private Double rating;
     private GalleryDTO gallery;
-    private int categoryId;
-    private String categoryName;
+    private CategoryDTO category;
 
     public ProductWithThumbnailsDTO(Product product) {
         this.id = product.getId();
@@ -27,14 +26,13 @@ public class ProductWithThumbnailsDTO {
         this.full_Description = product.getFull_description();
         this.published = product.getPublished();
         this.rating = product.getRating();
-        this.categoryId = product.getCategory().getId();
-        this.categoryName = product.getCategory().getName();
 
         List<ThumbnailInfoDTO> thumbnailInfoList = product.getGallery().getThumbnails().stream()
                 .map(thumbnail -> new ThumbnailInfoDTO(thumbnail.getId(), thumbnail.getLink(), thumbnail.getPosition()))
                 .collect(Collectors.toList());
 
         this.gallery = new GalleryDTO(product.getGallery().getId(), thumbnailInfoList);
+        this.category = new CategoryDTO(product.getCategory().getId(), product.getCategory().getName());
 
     }
 
@@ -102,28 +100,20 @@ public class ProductWithThumbnailsDTO {
         this.rating = rating;
     }
 
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
     public GalleryDTO getGallery() {
         return gallery;
     }
 
     public void setGallery(GalleryDTO gallery) {
         this.gallery = gallery;
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
     }
 
 }
