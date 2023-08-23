@@ -21,8 +21,14 @@ public class GalleryController {
     }
 
     @GetMapping
-    public List<Gallery> getAllGalleries() {
-        return galleryService.getAllGalleries();
+    public ResponseEntity<List<List<ThumbnailInfoDTO>>> getAllGalleriesWithThumbnails() {
+        List<List<ThumbnailInfoDTO>> galleriesWithThumbnails = galleryService.getAllGalleriesWithThumbnails();
+
+        if (galleriesWithThumbnails.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(galleriesWithThumbnails);
     }
 
     @GetMapping("/{galleryId}")

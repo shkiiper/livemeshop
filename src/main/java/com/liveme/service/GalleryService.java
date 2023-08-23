@@ -21,8 +21,22 @@ public class GalleryService {
         this.galleryRepository = galleryRepository;
     }
 
-    public List<Gallery> getAllGalleries() {
-        return galleryRepository.findAll();
+    @Transactional
+    public List<List<ThumbnailInfoDTO>> getAllGalleriesWithThumbnails() {
+        List<List<ThumbnailInfoDTO>> galleriesWithThumbnails = new ArrayList<>();
+        List<Gallery> galleries = galleryRepository.findAll();
+
+        for (Gallery gallery : galleries) {
+            List<ThumbnailInfoDTO> thumbnailInfoList = new ArrayList<>();
+            for (Thumbnail thumbnail : gallery.getThumbnails()) {
+                ThumbnailInfoDTO thumbnailInfo = new ThumbnailInfoDTO(thumbnail.getId(), thumbnail.getLink(),
+                        thumbnail.getPosition());
+                thumbnailInfoList.add(thumbnailInfo);
+            }
+            galleriesWithThumbnails.add(thumbnailInfoList);
+        }
+
+        return galleriesWithThumbnails;
     }
 
     @Transactional
@@ -37,7 +51,6 @@ public class GalleryService {
         for (Thumbnail thumbnail : gallery.getThumbnails()) {
             ThumbnailInfoDTO thumbnailInfo = new ThumbnailInfoDTO(thumbnail.getId(), thumbnail.getLink(),
                     thumbnail.getPosition());
-            thumbnailInfo.setGalleryId(galleryId);
             thumbnailInfoList.add(thumbnailInfo);
         }
 

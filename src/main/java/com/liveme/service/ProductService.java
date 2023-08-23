@@ -1,5 +1,6 @@
 package com.liveme.service;
 
+import com.liveme.dto.ProductWithThumbnailsDTO;
 import com.liveme.entity.Gallery;
 import com.liveme.entity.Product;
 import com.liveme.repository.GalleryRepository;
@@ -7,11 +8,12 @@ import com.liveme.repository.ProductRepository;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -25,25 +27,27 @@ public class ProductService {
         this.galleryRepository = galleryRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    @Transactional
+    public List<ProductWithThumbnailsDTO> getAllProductsWithThumbnails() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(ProductWithThumbnailsDTO::new)
+                .collect(Collectors.toList());
     }
 
-    public Product getProductById(int id) throws BadRequestException {
+    @Transactional
+    public ProductWithThumbnailsDTO getProductWithThumbnailInfo(int id) throws BadRequestException {
+        Product product = getProductById(id);
+
+        return new ProductWithThumbnailsDTO(product);
+    }
+
+    private Product getProductById(int id) throws BadRequestException {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             return productOptional.get();
         } else {
             throw new BadRequestException("Ошибка", "Продукт с указанным ID не найден", "id");
-        }
-    }
-
-    public Product getProductWithGalleryById(int id) throws SuccessException, BadRequestException {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            return productOptional.get();
-        } else {
-            throw new SuccessException("Успешно", "Продукт не имеет галереи изображений");
         }
     }
 

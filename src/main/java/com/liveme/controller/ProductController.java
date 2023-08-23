@@ -1,5 +1,6 @@
 package com.liveme.controller;
 
+import com.liveme.dto.ProductWithThumbnailsDTO;
 import com.liveme.entity.Product;
 import com.liveme.service.ProductService;
 import com.liveme.exception.BadRequestException;
@@ -7,7 +8,6 @@ import com.liveme.exception.SuccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,23 +25,21 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductWithThumbnailsDTO>> getAllProductsWithThumbnails() {
+        List<ProductWithThumbnailsDTO> products = productService.getAllProductsWithThumbnails();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable int id) {
-        try {
-            Product product = productService.getProductById(id);
-            return ResponseEntity.ok(product);
-        } catch (BadRequestException ex) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("status", ex.getStatus());
-            errorResponse.put("errorMessage", ex.getErrorMessage());
-            errorResponse.put("fieldName", ex.getFieldName());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    public ResponseEntity<ProductWithThumbnailsDTO> getProductWithThumbnailInfo(@PathVariable int id)
+            throws BadRequestException {
+        ProductWithThumbnailsDTO product = productService.getProductWithThumbnailInfo(id);
+
+        if (product == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping

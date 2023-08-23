@@ -4,7 +4,6 @@ public class ThumbnailInfoDTO {
     private int id;
     private int position;
     private String link;
-    private int galleryId; // Добавленное поле
 
     public ThumbnailInfoDTO(int id, String link, int position) {
         this.id = id;
@@ -36,11 +35,4 @@ public class ThumbnailInfoDTO {
         this.link = link;
     }
 
-    public int getGalleryId() {
-        return galleryId;
-    }
-
-    public void setGalleryId(int galleryId) {
-        this.galleryId = galleryId;
-    }
 }
