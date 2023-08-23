@@ -62,28 +62,28 @@ public class ProductWithThumbnailsDTO {
         this.price = price;
     }
 
-    public Integer getSalePrice() {
+    public Integer getSale_price() {
         return sale_Price;
     }
 
-    public void setSalePrice(Integer salePrice) {
+    public void setSale_price(Integer salePrice) {
         this.sale_Price = salePrice;
     }
 
-    public String getShortDescription() {
+    public String getShort_escription() {
         return short_Description;
     }
 
-    public void setShortDescription(String shortDescription) {
+    public void setShort_description(String shortDescription) {
         this.short_Description = shortDescription;
     }
 
-    public String getFullDescription() {
+    public String getFull_description() {
         return full_Description;
     }
 
-    public void setFullDescription(String fullDescription) {
-        this.full_Description = fullDescription;
+    public void setFull_description(String full_Description) {
+        this.full_Description = full_Description;
     }
 
     public Boolean getPublished() {
