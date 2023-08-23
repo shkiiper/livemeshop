@@ -78,7 +78,8 @@ public class ProductService {
         return new ProductWithThumbnailsDTO(createdProduct);
     }
 
-    public Product updateProduct(int id, Product product) throws BadRequestException {
+    @Transactional
+    public ProductWithThumbnailsDTO updateProduct(int id, Product product) throws BadRequestException {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product existingProduct = productOptional.get();
@@ -119,7 +120,8 @@ public class ProductService {
                 existingProduct.setCategory(product.getCategory());
             }
 
-            return productRepository.save(existingProduct);
+            Product updatedProduct = productRepository.save(existingProduct);
+            return new ProductWithThumbnailsDTO(updatedProduct);
         } else {
             throw new BadRequestException("Ошибка", "Продукт с указанным ID не найден", "id");
         }

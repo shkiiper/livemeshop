@@ -64,7 +64,7 @@ public class ProductController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody Product product) {
         try {
-            Product updatedProduct = productService.updateProduct(id, product);
+            ProductWithThumbnailsDTO updatedProduct = productService.updateProduct(id, product);
             return ResponseEntity.ok(updatedProduct);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();
