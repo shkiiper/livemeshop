@@ -2,6 +2,7 @@ package com.liveme.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liveme.dto.ThumbnailDTO;
 import com.liveme.entity.Thumbnail;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
@@ -125,6 +126,20 @@ public class ThumbnailController {
             errorResponse.put("errorMessage", ex.getErrorMessage());
             errorResponse.put("fieldName", ex.getFieldName());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateThumbnailPosition(@PathVariable int id,
+            @RequestBody Map<String, Integer> positionMap) {
+        int newPosition = positionMap.get("position");
+
+        try {
+            ThumbnailDTO updatedThumbnail = thumbnailService.updateThumbnailPosition(id, newPosition);
+            return new ResponseEntity<>(updatedThumbnail, HttpStatus.OK);
+        } catch (BadRequestException e) {
+            // Обработка ошибки BadRequestException
+            return new ResponseEntity<>(e.getErrorBody(), HttpStatus.BAD_REQUEST);
         }
     }
 

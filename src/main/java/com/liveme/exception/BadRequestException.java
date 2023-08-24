@@ -31,4 +31,8 @@ public class BadRequestException extends Exception {
     public String getFieldName() {
         return fieldName;
     }
+
+    public Object getErrorBody() {
+        return null;
+    }
 }
