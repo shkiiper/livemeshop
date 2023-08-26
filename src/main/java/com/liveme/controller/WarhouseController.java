@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/warhouse")
+@RequestMapping("/warehouse")
 public class WarhouseController {
     private final WarhouseService warhouseService;
 
@@ -57,7 +57,7 @@ public class WarhouseController {
             Warhouse createdWarhouse = warhouseService.createWarhouse(warhouse);
             Map<String, String> successResponse = new HashMap<>();
             successResponse.put("status", "Успешно");
-            successResponse.put("message", "Warhouse created");
+            successResponse.put("message", "Warehouse created");
             return ResponseEntity.ok(successResponse);
         } catch (BadRequestException ex) {
             Map<String, String> errorResponse = new HashMap<>();

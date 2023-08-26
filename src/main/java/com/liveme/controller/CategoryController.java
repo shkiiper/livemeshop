@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/category")
 public class CategoryController {
     private final CategoryService categoryService;
 

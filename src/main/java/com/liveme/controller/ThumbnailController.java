@@ -1,7 +1,5 @@
 package com.liveme.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liveme.dto.ThumbnailDTO;
 import com.liveme.entity.Thumbnail;
 import com.liveme.exception.BadRequestException;
@@ -14,14 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/thumbnails")
+@RequestMapping("/thumbnail")
 public class ThumbnailController {
     @Value("${media.directory}")
     private String mediaDirectory;
@@ -138,7 +133,6 @@ public class ThumbnailController {
             ThumbnailDTO updatedThumbnail = thumbnailService.updateThumbnailPosition(id, newPosition);
             return new ResponseEntity<>(updatedThumbnail, HttpStatus.OK);
         } catch (BadRequestException e) {
-            // Обработка ошибки BadRequestException
             return new ResponseEntity<>(e.getErrorBody(), HttpStatus.BAD_REQUEST);
         }
     }

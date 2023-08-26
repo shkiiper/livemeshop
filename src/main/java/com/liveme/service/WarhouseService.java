@@ -20,11 +20,11 @@ public class WarhouseService {
 
     public Warhouse createWarhouse(Warhouse warhouse) throws BadRequestException {
         if (warhouse == null || warhouse.getRegion() == null || warhouse.getRegion().isEmpty()) {
-            throw new BadRequestException("Ошибка", "Invalid warhouse data", "warhouse");
+            throw new BadRequestException("Ошибка", "Invalid warehouse data", "warehouse");
         }
         Warhouse existingWarhouse = warhouseRepository.findByRegion(warhouse.getRegion());
         if (existingWarhouse != null) {
-            throw new BadRequestException("Ошибка", "такой склад уже существует", "warhouse");
+            throw new BadRequestException("Ошибка", "такой склад уже существует", "warehouse");
         }
 
         Warhouse createdWarhouse = warhouseRepository.save(warhouse);
@@ -35,7 +35,7 @@ public class WarhouseService {
     public List<Warhouse> getAllWarhouses() throws BadRequestException {
         List<Warhouse> warhouses = warhouseRepository.findAll();
         if (warhouses.isEmpty()) {
-            throw new BadRequestException("Ошибка", "Нет доступных складов", "warhouses");
+            throw new BadRequestException("Ошибка", "Нет доступных складов", "warehouses");
         }
         return warhouses;
     }
@@ -50,7 +50,7 @@ public class WarhouseService {
 
     public Warhouse updateWarhouse(int id, Warhouse warhouse) throws BadRequestException {
         if (warhouse == null || warhouse.getRegion() == null || warhouse.getRegion().isEmpty()) {
-            throw new BadRequestException("Ошибка", "Invalid warhouse data", "warhouse");
+            throw new BadRequestException("Ошибка", "Invalid warehouse data", "warehouse");
         }
 
         Warhouse existingWarhouse = warhouseRepository.findById(id).orElse(null);

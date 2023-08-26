@@ -11,7 +11,7 @@ import com.liveme.service.ReviewService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
 

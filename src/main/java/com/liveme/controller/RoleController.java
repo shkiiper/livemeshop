@@ -11,7 +11,7 @@ import com.liveme.service.RoleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/role")
 public class RoleController {
     private final RoleService roleService;
 

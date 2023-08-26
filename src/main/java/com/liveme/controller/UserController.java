@@ -31,7 +31,7 @@ import com.liveme.service.JwtService;
 import com.liveme.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired

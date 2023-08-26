@@ -11,7 +11,7 @@ import com.liveme.service.InventoryService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventories")
+@RequestMapping("/inventory")
 public class InventoryController {
     private final InventoryService inventoryService;
 
