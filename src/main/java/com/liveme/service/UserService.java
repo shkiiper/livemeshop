@@ -5,24 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.liveme.entity.Role;
-import com.liveme.entity.Thumbnail;
 import com.liveme.entity.UserInfo;
 import com.liveme.exception.BadRequestException;
 import com.liveme.exception.SuccessException;
 import com.liveme.repository.UserInfoRepository;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @Service
 public class UserService {

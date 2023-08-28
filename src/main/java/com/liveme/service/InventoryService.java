@@ -2,15 +2,12 @@ package com.liveme.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.liveme.entity.Category;
 import com.liveme.entity.Inventory;
 import com.liveme.entity.Product;
 import com.liveme.entity.Warhouse;
 import com.liveme.repository.InventoryRepository;
 import com.liveme.repository.ProductRepository;
 import com.liveme.repository.WarhouseRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.HashSet;

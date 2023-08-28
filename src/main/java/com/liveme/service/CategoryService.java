@@ -46,17 +46,6 @@ public class CategoryService {
         throw new SuccessException("Успешно", "Категория создана");
     }
 
-    // public Category updateCategory(int id, Category category) throws
-    // BadRequestException {
-    // Optional<Category> categoryOptional = categoryRepository.findById(id);
-    // if (categoryOptional.isPresent()) {
-    // category.setId(id);
-    // return categoryRepository.save(category);
-    // } else {
-    // throw new BadRequestException("Ошибка", "Категория с указанным ID не
-    // найдена", "id");
-    // }
-    // }
     public Category updateCategory(int id, Category updatedCategory) throws BadRequestException {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
 
