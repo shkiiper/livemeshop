@@ -105,7 +105,7 @@ public class ThumbnailController {
             String domain = request.getRequestURL().toString().replace(request.getRequestURI(), "");
 
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            String imageUrl = domain + "/thumbnails/media/" + fileName;
+            String imageUrl = domain + "/thumbnail/media/" + fileName;
 
             createdThumbnail.setLink(imageUrl);
             thumbnailRepository.save(createdThumbnail);
