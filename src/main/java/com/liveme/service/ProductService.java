@@ -51,7 +51,7 @@ public class ProductService {
         return products.stream()
                 .map(product -> {
                     List<Thumbnail> thumbnails = product.getGallery().getThumbnails();
-                    thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
+                    thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition));
 
                     return new ProductWithThumbnailsDTO(product);
                 })
@@ -62,7 +62,7 @@ public class ProductService {
     public ProductWithThumbnailsDTO getProductWithThumbnailInfo(int id) throws BadRequestException {
         Product product = getProductById(id);
         List<Thumbnail> thumbnails = product.getGallery().getThumbnails();
-        thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
+        thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition));
 
         return new ProductWithThumbnailsDTO(product);
     }
@@ -143,6 +143,9 @@ public class ProductService {
             if (product.getCategory() != null) {
                 existingProduct.setCategory(product.getCategory());
             }
+
+            List<Thumbnail> thumbnails = existingProduct.getGallery().getThumbnails();
+            thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition));
 
             Product updatedProduct = productRepository.save(existingProduct);
             return new ProductWithThumbnailsDTO(updatedProduct);
