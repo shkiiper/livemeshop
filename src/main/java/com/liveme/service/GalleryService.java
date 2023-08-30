@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,8 +28,11 @@ public class GalleryService {
         List<Gallery> galleries = galleryRepository.findAll();
 
         for (Gallery gallery : galleries) {
+            List<Thumbnail> thumbnails = gallery.getThumbnails();
+            thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
+
             List<ThumbnailInfoDTO> thumbnailInfoList = new ArrayList<>();
-            for (Thumbnail thumbnail : gallery.getThumbnails()) {
+            for (Thumbnail thumbnail : thumbnails) {
                 ThumbnailInfoDTO thumbnailInfo = new ThumbnailInfoDTO(thumbnail.getId(), thumbnail.getLink(),
                         thumbnail.getPosition());
                 thumbnailInfoList.add(thumbnailInfo);
@@ -47,8 +51,11 @@ public class GalleryService {
             return Collections.emptyList();
         }
 
+        List<Thumbnail> thumbnails = gallery.getThumbnails();
+        thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
+
         List<ThumbnailInfoDTO> thumbnailInfoList = new ArrayList<>();
-        for (Thumbnail thumbnail : gallery.getThumbnails()) {
+        for (Thumbnail thumbnail : thumbnails) {
             ThumbnailInfoDTO thumbnailInfo = new ThumbnailInfoDTO(thumbnail.getId(), thumbnail.getLink(),
                     thumbnail.getPosition());
             thumbnailInfoList.add(thumbnailInfo);

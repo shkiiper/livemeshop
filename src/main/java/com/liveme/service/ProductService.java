@@ -3,6 +3,7 @@ package com.liveme.service;
 import com.liveme.dto.ProductWithThumbnailsDTO;
 import com.liveme.entity.Gallery;
 import com.liveme.entity.Product;
+import com.liveme.entity.Thumbnail;
 import com.liveme.repository.GalleryRepository;
 import com.liveme.repository.ProductRepository;
 import com.liveme.exception.BadRequestException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,17 +30,39 @@ public class ProductService {
         this.galleryRepository = galleryRepository;
     }
 
+    // @Transactional
+    // public List<ProductWithThumbnailsDTO> getAllProductsWithThumbnails() {
+    // List<Product> products = productRepository.findAll();
+    // return products.stream()
+    // .map(ProductWithThumbnailsDTO::new)
+    // .collect(Collectors.toList());
+    // }
+
+    // @Transactional
+    // public ProductWithThumbnailsDTO getProductWithThumbnailInfo(int id) throws
+    // BadRequestException {
+    // Product product = getProductById(id);
+
+    // return new ProductWithThumbnailsDTO(product);
+    // }
     @Transactional
     public List<ProductWithThumbnailsDTO> getAllProductsWithThumbnails() {
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(ProductWithThumbnailsDTO::new)
+                .map(product -> {
+                    List<Thumbnail> thumbnails = product.getGallery().getThumbnails();
+                    thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
+
+                    return new ProductWithThumbnailsDTO(product);
+                })
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public ProductWithThumbnailsDTO getProductWithThumbnailInfo(int id) throws BadRequestException {
         Product product = getProductById(id);
+        List<Thumbnail> thumbnails = product.getGallery().getThumbnails();
+        thumbnails.sort(Comparator.comparingInt(Thumbnail::getPosition)); // Сортировка по полю position
 
         return new ProductWithThumbnailsDTO(product);
     }
