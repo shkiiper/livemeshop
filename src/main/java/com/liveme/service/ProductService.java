@@ -30,21 +30,6 @@ public class ProductService {
         this.galleryRepository = galleryRepository;
     }
 
-    // @Transactional
-    // public List<ProductWithThumbnailsDTO> getAllProductsWithThumbnails() {
-    // List<Product> products = productRepository.findAll();
-    // return products.stream()
-    // .map(ProductWithThumbnailsDTO::new)
-    // .collect(Collectors.toList());
-    // }
-
-    // @Transactional
-    // public ProductWithThumbnailsDTO getProductWithThumbnailInfo(int id) throws
-    // BadRequestException {
-    // Product product = getProductById(id);
-
-    // return new ProductWithThumbnailsDTO(product);
-    // }
     @Transactional
     public List<ProductWithThumbnailsDTO> getAllProductsWithThumbnails() {
         List<Product> products = productRepository.findAll();
